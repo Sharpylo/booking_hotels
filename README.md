@@ -1,1 +1,1 @@
-# booking_hotels
+# Booking hotels
