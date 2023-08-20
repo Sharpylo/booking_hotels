@@ -1,17 +1,17 @@
 from datetime import date
 from typing import Optional
-from app.dao.base import BaseDAO
-
-from app.hotels.models import Hotels
-from app.database import engine, async_session_maker
-
-from sqlalchemy.ext.asyncio import AsyncSession
+from collections import defaultdict
 from sqlalchemy.future import select
+
+from app.dao.base import BaseDAO
+from app.hotels.models import Hotels
+from app.database import async_session_maker
+
 
 
 class HotelDAO(BaseDAO):
     model = Hotels
-    
+
     @classmethod
     async def find_all(
         cls, 
@@ -21,8 +21,6 @@ class HotelDAO(BaseDAO):
     ):
         async with async_session_maker() as session:
             get_rooms_left_cte = cls.get_rooms_left(date_from=date_from, date_to=date_to)
-
-            # alias the CTE for easier reference
             cte_alias = get_rooms_left_cte.alias()
 
             query = select(
@@ -39,6 +37,17 @@ class HotelDAO(BaseDAO):
                 Hotels.location.like(f"%{location}%")
             )
 
-
             result = await session.execute(query)
-            return result.fetchall()
+            hotels_orm = result.fetchall()
+
+        hotels_dict = defaultdict(dict)
+        for hotel in hotels_orm:
+            hotel_data = hotel._asdict()
+            hotel_id = hotel_data['id']
+            if hotel_id not in hotels_dict:
+                hotels_dict[hotel_id] = hotel_data
+            else:
+                hotels_dict[hotel_id]['rooms_left'] += hotel_data['rooms_left']
+
+        hotels = list(hotels_dict.values())
+        return hotels

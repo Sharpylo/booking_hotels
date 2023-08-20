@@ -1,4 +1,5 @@
-from pydantic import BaseModel, json
+from typing import Optional
+from pydantic import BaseModel, Json
 
 
 class SRoom(BaseModel):
@@ -7,9 +8,14 @@ class SRoom(BaseModel):
     name: str
     description: str
     price: int
-    services: json
+    services: Json
     quantity: int
     image_id: int
     
     class Config:
         from_attributes = True
+        
+        
+class SRoomExtended(SRoom):
+    total_cost: Optional[int]
+    rooms_left: Optional[int]

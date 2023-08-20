@@ -10,7 +10,7 @@ from app.hotels.shemas import SHotel
 
 router = APIRouter(
     prefix="/hotels",
-    tags=["Отели"]
+    tags=["Отели и комнаты"]
 )
 
 
@@ -21,17 +21,5 @@ async def get_hotels(
     date_from: Optional[date] = None,
     date_to: Optional[date] = None
 ):
-    hotels_orm = await HotelDAO.find_all(location=location, date_from=date_from, date_to=date_to)
-    hotels_dict = defaultdict(dict)
-
-    for hotel in hotels_orm:
-        hotel_data = hotel._asdict()
-        hotel_id = hotel_data['id']
-        if hotel_id not in hotels_dict:
-            hotels_dict[hotel_id] = hotel_data
-        else:
-            hotels_dict[hotel_id]['rooms_left'] += hotel_data['rooms_left']
-
-    hotels = list(hotels_dict.values())
-
+    hotels = await HotelDAO.find_all(location=location, date_from=date_from, date_to=date_to)
     return hotels

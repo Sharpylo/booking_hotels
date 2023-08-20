@@ -41,3 +41,5 @@ class BaseDAO:
             await session.execute(query)
             await session.commit()
             
+
+            
