@@ -1,11 +1,11 @@
-from pydantic import BaseModel, Json
+from pydantic import BaseModel
 
 
 class SHotel(BaseModel):
     id: int
     name: str
     location: str
-    services: Json
+    services: list
     rooms_quantity: int
     image_id: int
     

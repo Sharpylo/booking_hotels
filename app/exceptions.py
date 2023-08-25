@@ -45,6 +45,14 @@ class RoomCannotBeBooked(BookingException):
 class BookingNotFound(BookingException):
     status_code=status.HTTP_404_NOT_FOUND
     detail='Бронирование не найдено'
+    
+class HotelNotFound(BookingException):
+    status_code=status.HTTP_404_NOT_FOUND
+    detail='Отель не найден'
+    
+class NoRightsToDelete(BaseException):
+    status_code=status.HTTP_403_FORBIDDEN
+    detail='Вы не имеете права удалять это бронирование.'
 
 
 

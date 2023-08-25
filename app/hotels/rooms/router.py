@@ -1,8 +1,8 @@
-from datetime import date, timedelta
+from datetime import date
 from typing import Optional, List
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter
+from app.exceptions import HotelNotFound
 
-from app.database import async_session_maker
 from app.hotels.rooms.dao import RoomDAO
 from app.hotels.rooms.shemas import SRoomExtended
 
@@ -21,5 +21,5 @@ async def get_rooms(
 ):
     rooms = await RoomDAO.get_rooms_by_hotel_id(hotel_id, date_from, date_to)
     if not rooms:
-        raise HTTPException(status_code=404, detail="Hotel not found")
+        raise HotelNotFound
     return rooms

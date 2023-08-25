@@ -4,6 +4,7 @@ from app.bookings.schemas import SBooking
 
 from app.dao.base import BaseDAO
 from app.bookings.models import Bookings
+from app.exceptions import NoRightsToDelete
 from app.hotels.rooms.models import Rooms
 from app.database import async_session_maker
 from app.hotels.rooms.dao import RoomDAO
@@ -22,7 +23,7 @@ class BookingDAO(BaseDAO):
     
         rooms = []
         for room_id in room_ids:
-            room = await BookingDAO.get_rooms(room_id=room_id)
+            room = await BookingDAO._get_rooms(room_id=room_id)
             rooms.extend(room)
     
         enriched_bookings = []
@@ -43,7 +44,7 @@ class BookingDAO(BaseDAO):
     
     
     @staticmethod
-    async def get_rooms(room_id: int):
+    async def _get_rooms(room_id: int):
         rooms_orm = await RoomDAO.find_all()
         rooms = []
         
@@ -134,5 +135,13 @@ class BookingDAO(BaseDAO):
                 return None
             
     @classmethod
-    async def booking_del_by_id(cls, booking_id: int):
-        return await cls.del_by_id(id=booking_id)
+    async def booking_del_by_id(cls, booking_id: int, user: int):
+        bookings_orm = await BookingDAO.find_all(user_id=user.id)
+        bookings = [SBooking(**booking["Bookings"].__dict__).id for booking in bookings_orm]
+        
+        if int(booking_id) in bookings:
+            return await cls.del_by_id(id=booking_id)
+        else:
+            raise NoRightsToDelete
+
+            
