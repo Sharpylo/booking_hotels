@@ -1,12 +1,75 @@
 from datetime import date
 from sqlalchemy import and_, func, insert, or_, select
+from app.bookings.schemas import SBooking
+
 from app.dao.base import BaseDAO
 from app.bookings.models import Bookings
 from app.hotels.rooms.models import Rooms
 from app.database import async_session_maker
+from app.hotels.rooms.dao import RoomDAO
+from app.hotels.rooms.shemas import SRoom
 
 class BookingDAO(BaseDAO):
     model = Bookings
+    
+    @staticmethod
+    async def get_bookings(user: int):
+        bookings_orm = await BookingDAO.find_all(user_id=user.id)
+        bookings = [SBooking(**booking["Bookings"].__dict__) for booking in bookings_orm]
+    
+        # Extract room_ids from bookings
+        room_ids = set(booking.room_id for booking in bookings)
+    
+        rooms = []
+        for room_id in room_ids:
+            room = await BookingDAO.get_rooms(room_id=room_id)
+            rooms.extend(room)
+    
+        enriched_bookings = []
+        for booking in bookings:
+            matching_rooms = [room for room in rooms if room.id == booking.room_id]
+            if matching_rooms:
+                matching_room = matching_rooms[0]
+                enriched_booking = booking.__dict__
+                enriched_booking['room'] = {
+                    'image_id': matching_room.image_id,
+                    'name': matching_room.name,
+                    'description': matching_room.description,
+                    'services': matching_room.services
+                }
+                enriched_bookings.append(enriched_booking)
+                
+        return enriched_bookings
+    
+    
+    @staticmethod
+    async def get_rooms(room_id: int):
+        rooms_orm = await RoomDAO.find_all()
+        rooms = []
+        
+        for room_data in rooms_orm:
+            room_object = room_data['Rooms']  # Access the 'Rooms' key in the dictionary
+            if room_object and room_object.id == room_id:  # Add this condition to filter by room_id
+                try:
+                    # Use room_object.services directly (assuming it's a list)
+                    room_services = room_object.services
+    
+                    s_room = SRoom(
+                        id=room_object.id,
+                        hotel_id=room_object.hotel_id,
+                        name=room_object.name,
+                        description=room_object.description,
+                        price=room_object.price,
+                        services=room_services,
+                        quantity=room_object.quantity,
+                        image_id=room_object.image_id
+                    )
+                    rooms.append(s_room)
+                except AttributeError:
+                    print(f"Invalid room object: {room_object}")
+                    
+        return rooms
+    
 
     @staticmethod
     async def _get_rooms_left(session, room_id: int, date_from: date, date_to: date):

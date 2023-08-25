@@ -40,7 +40,6 @@ class RoomDAO(BaseDAO):
                 async with async_session_maker() as session:
                     result = await session.execute(rooms_left_query)
                     rooms_left_result = result.mappings().all()
-                    print(rooms_left_result)
 
                 # Filter results based on the hotel_id and room_id parameters
                 filtered_result = next((item for item in rooms_left_result if item['hotel_id'] == room_orm.hotel_id and item['room_id'] == room_orm.id), None)

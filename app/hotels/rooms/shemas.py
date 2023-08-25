@@ -8,7 +8,7 @@ class SRoom(BaseModel):
     name: str
     description: str
     price: int
-    services: Json
+    services: list
     quantity: int
     image_id: int
     

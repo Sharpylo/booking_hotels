@@ -8,6 +8,7 @@ from app.users.models import Users
 from app.exceptions import RoomCannotBeBooked
 
 
+
 router = APIRouter(
     prefix="/bookings",  # находится перед всеми ендпоинтами
     tags=["Бронирование"]  # название роутера для документации 
@@ -15,10 +16,10 @@ router = APIRouter(
 
 
 @router.get("")
-async def get_bookings(user: Users = Depends(get_current_user)): #-> List[SBooking]: 
-    bookings_orm = await BookingDAO.find_all(user_id=user.id)
-    bookings = [SBooking(**booking["Bookings"].__dict__) for booking in bookings_orm]
-    return bookings
+async def get_bookings(user: Users = Depends(get_current_user)):
+    enriched_bookings = await BookingDAO.get_bookings(user)
+            
+    return enriched_bookings
 
 
 @router.post("")
