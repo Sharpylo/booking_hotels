@@ -11,7 +11,7 @@ class RoomDAO(BaseDAO):
     model = Rooms
 
     @classmethod
-    async def get_rooms(cls, hotel_id: int, date_from: Optional[date] = None, date_to: Optional[date] = None) -> List[dict]:
+    async def get_rooms_by_hotel_id(cls, hotel_id: int, date_from: Optional[date] = None, date_to: Optional[date] = None) -> List[dict]:
         rooms_orm = await cls.find_all(hotel_id=hotel_id)
         rooms = []
 
@@ -22,7 +22,7 @@ class RoomDAO(BaseDAO):
                 "hotel_id": room_orm.hotel_id,
                 "name": room_orm.name,
                 "description": room_orm.description,
-                "services": json.dumps(room_orm.services),
+                "services": room_orm.services,
                 "price": room_orm.price,
                 "quantity": room_orm.quantity,
                 "image_id": room_orm.image_id,

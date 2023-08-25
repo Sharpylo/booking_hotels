@@ -4,3 +4,8 @@ alembic revision --autogenerate -m "Initial migration"
 
 
 alembic upgrade head - чтобы прогнать все миграции или вместо head использовать revision
+
+
+git add .
+git commit -m "Описание ваших изменений"
+git push origin master

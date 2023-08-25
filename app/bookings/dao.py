@@ -132,3 +132,7 @@ class BookingDAO(BaseDAO):
                 return new_booking.scalar()
             else:
                 return None
+            
+    @classmethod
+    async def booking_del_by_id(cls, booking_id: int):
+        return await cls.del_by_id(id=booking_id)

@@ -41,6 +41,10 @@ class UserIsNotPresentException(BookingException):
 class RoomCannotBeBooked(BookingException):
     status_code=status.HTTP_409_CONFLICT
     detail='Нет свободных номеров для бронирования'
+    
+class BookingNotFound(BookingException):
+    status_code=status.HTTP_404_NOT_FOUND
+    detail='Бронирование не найдено'
 
 
 

@@ -19,7 +19,7 @@ async def get_rooms(
     date_from: Optional[date] = None,
     date_to: Optional[date] = None
 ):
-    rooms = await RoomDAO.get_rooms(hotel_id, date_from, date_to)
+    rooms = await RoomDAO.get_rooms_by_hotel_id(hotel_id, date_from, date_to)
     if not rooms:
         raise HTTPException(status_code=404, detail="Hotel not found")
     return rooms

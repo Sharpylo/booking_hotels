@@ -41,5 +41,16 @@ class BaseDAO:
             await session.execute(query)
             await session.commit()
             
+    @classmethod
+    async def del_by_id(cls, id: int):
+        async with async_session_maker() as session:
+            to_delete = await session.get(cls.model, id)
+
+            if to_delete:
+                await session.delete(to_delete) 
+                await session.commit()  
+                return True
+            else:
+                return False            
 
             
