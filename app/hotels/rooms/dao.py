@@ -1,5 +1,4 @@
 from datetime import date
-import json
 from typing import Optional, List
 
 from app.dao.base import BaseDAO

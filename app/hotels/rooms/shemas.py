@@ -1,5 +1,5 @@
 from typing import Optional
-from pydantic import BaseModel, Json
+from pydantic import BaseModel
 
 
 class SRoom(BaseModel):
