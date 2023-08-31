@@ -9,3 +9,14 @@ alembic upgrade head - чтобы прогнать все миграции ил�
 git add .
 git commit -m "Описание ваших изменений"
 git push origin master
+
+celery -A app.tasks.celery:celery worker --loglevel=INFO --pool=solo
+celery -A app.tasks.celery:celery flower
+
+
+
+
+
+Кeширование:
+    https://github.com/tporadowski/redis
+    https://github.com/long2ice/fastapi-cache

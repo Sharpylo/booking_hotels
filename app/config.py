@@ -8,8 +8,19 @@ class Settings(BaseSettings):
     DB_USER: str
     DB_PASS: str
     DB_NAME: str
+    
     JWT_KEY: str
     JWT_ALG: str
+    
+    CELERY_NAME: str
+    
+    REDIS_HOST: str
+    REDIS_PORT: str
+         
+    SMTP_HOST: str
+    SMTP_PORT: str
+    SMTP_USER: str
+    SMTP_PASS: str
 
     @root_validator(skip_on_failure=True)
     def get_database_url(cls, values):

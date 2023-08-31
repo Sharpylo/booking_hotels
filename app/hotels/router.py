@@ -1,6 +1,7 @@
 from datetime import date
 from typing import Optional
 from fastapi import APIRouter
+from fastapi_cache.decorator import cache
 
 from app.exceptions import HotelNotFound
 from app.hotels.dao import HotelDAO
@@ -14,7 +15,8 @@ router = APIRouter(
 
 
 
-@router.get("")
+@router.get("/{location}")
+@cache(expire=30)
 async def get_hotels_by_location(
     location: str,
     date_from: Optional[date] = None,

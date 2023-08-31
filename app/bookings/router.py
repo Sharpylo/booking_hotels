@@ -3,6 +3,8 @@ from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from app.bookings.dao import BookingDAO
+from app.bookings.schemas import SBooking
+from app.tasks.tasks import send_booking_confirmation_email
 from app.users.dependencies import get_current_user
 from app.users.models import Users
 from app.exceptions import BookingNotFound, NoRightsToDelete, RoomCannotBeBooked
@@ -29,6 +31,10 @@ async def add_booking(
     booking = await BookingDAO.add(user.id, room_id, date_from, date_to)
     if not booking:
         raise RoomCannotBeBooked
+    booking_obj = SBooking.model_validate(booking)
+    booking_dict = booking_obj.model_dump()
+    send_booking_confirmation_email.delay(booking_dict, user.email)
+    return booking_dict
     
 
 @router.delete("/{booking_id}", status_code=204)
