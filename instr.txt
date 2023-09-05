@@ -20,3 +20,6 @@ celery -A app.tasks.celery:celery flower
 Кeширование:
     https://github.com/tporadowski/redis
     https://github.com/long2ice/fastapi-cache
+
+Админка:
+    https://aminalaee.dev/sqladmin/
