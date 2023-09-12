@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Cosmos",
+        "location": "Киев, Украина, улица Туполева 5",
+        "services": ["Wi-Fi", "Парковка"],
+        "rooms_quantity": 15,
+        "image_id": 1
+    },
+    {
+        "name": "Atlant",
+        "location": "Харьков, Украина, улица Проскуры 1",
+        "services": ["Парковка"],
+        "rooms_quantity": 23,
+        "image_id": 2
+    },
+    {
+        "name": "Oda",
+        "location": "Одесса, Украина, улица Приморская 21",
+        "services": ["Wi-Fi"],
+        "rooms_quantity": 30,
+        "image_id": 3
+    },
+    {
+        "name": "Lev",
+        "location": "Львов, Украина, улица Льва 11",
+        "services": ["Wi-Fi", "Парковка", "Бассейн"],
+        "rooms_quantity": 55,
+        "image_id": 4
+    }
+]

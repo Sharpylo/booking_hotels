@@ -2,6 +2,7 @@ from datetime import date
 
 from sqlalchemy import and_, func, or_, select
 from app.bookings.models import Bookings
+from app.exceptions import DateError
 from app.hotels.rooms.dao import RoomDAO
 from app.hotels.rooms.models import Rooms
 from app.hotels.rooms.shemas import SRoom
@@ -62,4 +63,4 @@ async def get_rooms_left_add(session, room_id: int, date_from: date, date_to: da
         total_rooms = await session.execute(get_total_rooms)
         total_rooms: int = total_rooms.scalar()
         rooms_left = total_rooms
-    return rooms_left
+    return rooms_left        

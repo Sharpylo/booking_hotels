@@ -9,6 +9,7 @@ from app.hotels.rooms.models import Rooms
 from app.database import async_session_maker
 from app.bookings.utils import get_rooms, get_rooms_left_add
 
+
 class BookingDAO(BaseDAO):
     model = Bookings
     
@@ -43,6 +44,14 @@ class BookingDAO(BaseDAO):
                 enriched_bookings.append(enriched_booking)
                 
         return enriched_bookings
+    
+    @staticmethod
+    async def find_by_id_and_user(booking_id: int, user_id: int):
+        bookings_orm = await BookingDAO.find_all(user_id=user_id)
+        for booking in bookings_orm:
+            if booking["Bookings"].id == booking_id:
+                return SBooking(**booking["Bookings"].__dict__)
+        return None
 
     @classmethod
     async def add(

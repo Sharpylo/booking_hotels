@@ -53,6 +53,15 @@ class HotelNotFound(BookingException):
 class NoRightsToDelete(BaseException):
     status_code=status.HTTP_403_FORBIDDEN
     detail='Вы не имеете права удалять это бронирование.'
+    
+class DateError(BookingException):
+    status_code=status.HTTP_400_BAD_REQUEST
+    detail='Дата заезда >= Дата выезда'
+    
+class TooManyDays(BookingException):
+    status_code=status.HTTP_400_BAD_REQUEST
+    detail='Бронь не может быть больше 30 дней'
+
 
 
 

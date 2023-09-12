@@ -23,3 +23,7 @@ celery -A app.tasks.celery:celery flower
 
 Админка:
     https://aminalaee.dev/sqladmin/
+
+
+pytest:
+    pytest -v -s
