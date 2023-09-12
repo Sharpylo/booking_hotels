@@ -59,7 +59,7 @@ async def delete_booking(booking_id: int, user: Users = Depends(get_current_user
         else:
             raise BookingNotFound
     except NoRightsToDelete as e:
-        return JSONResponse(content={"error": str(e)}, status_code=403)
+        return JSONResponse(content={"error": str(e.detail)}, status_code=403)
 
 
 
