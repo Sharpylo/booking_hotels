@@ -1,20 +1,24 @@
 from datetime import date
-from typing import Optional
-from fastapi import APIRouter, Depends, HTTPException
+
+from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
 
 from app.bookings.dao import BookingDAO
 from app.bookings.schemas import SBooking
+from app.exceptions import (
+    BookingNotFound,
+    DateError,
+    NoRightsToDelete,
+    RoomCannotBeBooked,
+    TooManyDays,
+)
 from app.tasks.tasks import send_booking_confirmation_email
 from app.users.dependencies import get_current_user
 from app.users.models import Users
-from app.exceptions import BookingNotFound, DateError, NoRightsToDelete, RoomCannotBeBooked, TooManyDays
-
-
 
 router = APIRouter(
     prefix="/bookings",  # находится перед всеми ендпоинтами
-    tags=["Бронирование"]  # название роутера для документации 
+    tags=["Бронирование"],  # название роутера для документации
 )
 
 
@@ -30,11 +34,13 @@ async def get_bookings(booking_id: int, user: Users = Depends(get_current_user))
     if not booking:
         raise BookingNotFound
     return booking
-    
+
 
 @router.post("")
 async def add_booking(
-    room_id: int, date_from: date, date_to: date,
+    room_id: int,
+    date_from: date,
+    date_to: date,
     user: Users = Depends(get_current_user),
 ):
     if date_from >= date_to:
@@ -48,7 +54,7 @@ async def add_booking(
     booking_dict = booking_obj.model_dump()
     send_booking_confirmation_email.delay(booking_dict, user.email)
     return booking_dict
-    
+
 
 @router.delete("/{booking_id}", status_code=204)
 async def delete_booking(booking_id: int, user: Users = Depends(get_current_user)):
@@ -60,6 +66,3 @@ async def delete_booking(booking_id: int, user: Users = Depends(get_current_user
             raise BookingNotFound
     except NoRightsToDelete as e:
         return JSONResponse(content={"error": str(e.detail)}, status_code=403)
-
-
-

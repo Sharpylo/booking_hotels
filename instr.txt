@@ -1,3 +1,5 @@
+pip install black flake8 autoflake isort pyright
+
 uvicorn app.main:app --reload
 alembic init migrations
 alembic revision --autogenerate -m "Initial migration" 
@@ -27,3 +29,15 @@ celery -A app.tasks.celery:celery flower
 
 pytest:
     pytest -v -s
+
+black:
+    black "путь/к/файлу" --diff --color
+
+flake8:
+    flake8 "путь/к/файлу"
+
+isort:
+    isort "путь/к/файлу" -rc   - отсортирует как считает isort нужным
+
+pyright:
+    pyright "путь/к/файлу"

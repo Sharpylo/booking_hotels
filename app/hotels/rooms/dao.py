@@ -1,21 +1,26 @@
 from datetime import date
-from typing import Optional, List
+from typing import List, Optional
 
 from app.dao.base import BaseDAO
-from app.hotels.rooms.models import Rooms
 from app.database import async_session_maker
+from app.hotels.rooms.models import Rooms
 
 
 class RoomDAO(BaseDAO):
     model = Rooms
 
     @classmethod
-    async def get_rooms_by_hotel_id(cls, hotel_id: int, date_from: Optional[date] = None, date_to: Optional[date] = None) -> List[dict]:
+    async def get_rooms_by_hotel_id(
+        cls,
+        hotel_id: int,
+        date_from: Optional[date] = None,
+        date_to: Optional[date] = None,
+    ) -> List[dict]:
         rooms_orm = await cls.find_all(hotel_id=hotel_id)
         rooms = []
 
         for room_dict in rooms_orm:
-            room_orm = room_dict['Rooms']
+            room_orm = room_dict["Rooms"]
             room = {
                 "id": room_orm.id,
                 "hotel_id": room_orm.hotel_id,
@@ -26,7 +31,7 @@ class RoomDAO(BaseDAO):
                 "quantity": room_orm.quantity,
                 "image_id": room_orm.image_id,
                 "total_cost": None,
-                "rooms_left": None
+                "rooms_left": None,
             }
 
             if date_from and date_to:
@@ -41,10 +46,20 @@ class RoomDAO(BaseDAO):
                     rooms_left_result = result.mappings().all()
 
                 # Filter results based on the hotel_id and room_id parameters
-                filtered_result = next((item for item in rooms_left_result if item['hotel_id'] == room_orm.hotel_id and item['room_id'] == room_orm.id), None)
+                filtered_result = next(
+                    (
+                        item
+                        for item in rooms_left_result
+                        if item["hotel_id"] == room_orm.hotel_id
+                        and item["room_id"] == room_orm.id
+                    ),
+                    None,
+                )
 
                 if filtered_result:
-                    room["rooms_left"] = filtered_result.get('rooms_left', 0)  # Update this line
+                    room["rooms_left"] = filtered_result.get(
+                        "rooms_left", 0
+                    )  # Update this line
 
             rooms.append(room)
         return rooms

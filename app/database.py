@@ -4,13 +4,12 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
 from app.config import settings
 
-
-if settings.MODE == 'DEV':
+if settings.MODE == "DEV":
     DATABASE_URL = settings.DEV_DATABASE_URL
     DATABASE_PARAMS = {}
-elif settings.MODE == 'TEST':
+elif settings.MODE == "TEST":
     DATABASE_URL = settings.TEST_DATABASE_URL
-    DATABASE_PARAMS = {'poolclass': NullPool}
+    DATABASE_PARAMS = {"poolclass": NullPool}
 else:
     DATABASE_URL = settings.PROD_DATABASE_URL
     DATABASE_PARAMS = {}
@@ -18,6 +17,7 @@ else:
 engine = create_async_engine(DATABASE_URL, **DATABASE_PARAMS)
 
 async_session_maker = sessionmaker(engine, class_=AsyncSession, expire_on_commit=False)
+
 
 class Base(DeclarativeBase):
     pass
