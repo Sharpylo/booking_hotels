@@ -26,6 +26,9 @@ celery -A app.tasks.celery:celery flower
 Админка:
     https://aminalaee.dev/sqladmin/
 
+Sentry:
+    https://vladyslav-939b625ab.sentry.io/issues/4482476757/?project=4505889969733632&referrer=onboarding-first-event-footer
+
 
 pytest:
     pytest -v -s
