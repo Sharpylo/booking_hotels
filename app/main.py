@@ -1,5 +1,6 @@
 import time
 import sentry_sdk
+from fastapi_versioning import VersionedFastAPI
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -30,7 +31,6 @@ sentry_sdk.init(
     profiles_sample_rate=1.0,
 )
 
-app.mount("/static", StaticFiles(directory="app/static"), "static")
 
 app.include_router(router_users)
 app.include_router(router_bookings)
@@ -68,6 +68,14 @@ async def startup():
     )
     FastAPICache.init(RedisBackend(redis), prefix="cache")
 
+app = VersionedFastAPI(app,
+    version_format='{major}',
+    prefix_format='/v{major}',
+    # description='Greet users with a nice message',
+    # middleware=[
+    #     Middleware(SessionMiddleware, secret_key='mysecretkey')
+    # ]
+)
 
 admin = Admin(app, engine, authentication_backend=auth_backend)
 
@@ -86,3 +94,5 @@ async def add_process_time_header(request: Request, call_next):
         "process_time": round(process_time, 4)
     })
     return response
+
+app.mount("/static", StaticFiles(directory="app/static"), "static")

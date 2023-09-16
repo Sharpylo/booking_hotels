@@ -2,6 +2,7 @@ from datetime import date
 
 from fastapi import APIRouter, Depends
 from fastapi.responses import JSONResponse
+from fastapi_versioning import version
 
 from app.bookings.dao import BookingDAO
 from app.bookings.schemas import SBooking
@@ -23,12 +24,14 @@ router = APIRouter(
 
 
 @router.get("")
+@version(1)
 async def get_all_bookings(user: Users = Depends(get_current_user)):
     enriched_bookings = await BookingDAO.get_bookings(user)
     return enriched_bookings
 
 
 @router.get("/{booking_id}")
+@version(1)
 async def get_bookings(booking_id: int, user: Users = Depends(get_current_user)):
     booking = await BookingDAO.find_by_id_and_user(booking_id, user.id)
     if not booking:
@@ -37,6 +40,7 @@ async def get_bookings(booking_id: int, user: Users = Depends(get_current_user))
 
 
 @router.post("")
+@version(1)
 async def add_booking(
     room_id: int,
     date_from: date,
@@ -57,6 +61,7 @@ async def add_booking(
 
 
 @router.delete("/{booking_id}", status_code=204)
+@version(1)
 async def delete_booking(booking_id: int, user: Users = Depends(get_current_user)):
     try:
         del_booking = await BookingDAO.booking_del_by_id(booking_id, user)
