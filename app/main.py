@@ -9,6 +9,7 @@ from fastapi_cache.backends.redis import RedisBackend
 from fastapi_cache.decorator import cache
 from redis import asyncio as aioredis
 from sqladmin import Admin
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.admin.auth import authentication_backend as auth_backend
 from app.admin.views import BookingsAdmin, HotelsAdmin, RoomsAdmin, UsersAdmin
@@ -67,7 +68,7 @@ async def startup():
         decode_responses=True,
     )
     FastAPICache.init(RedisBackend(redis), prefix="cache")
-
+    
 app = VersionedFastAPI(app,
     version_format='{major}',
     prefix_format='/v{major}',
@@ -76,6 +77,12 @@ app = VersionedFastAPI(app,
     #     Middleware(SessionMiddleware, secret_key='mysecretkey')
     # ]
 )
+
+instrumentator = Instrumentator(
+    should_group_status_codes=False,
+    excluded_handlers=[".*admin.*", "/metrics"],
+)
+instrumentator.instrument(app).expose(app)
 
 admin = Admin(app, engine, authentication_backend=auth_backend)
 
