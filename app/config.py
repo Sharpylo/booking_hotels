@@ -39,7 +39,7 @@ class Settings(BaseSettings):
         mode = values["MODE"]
         if mode == "DEV":
             values[
-                "DEV_DATABASE_URL"
+                "DATABASE_URL"
             ] = f"postgresql+asyncpg://{values['DB_USER']}:{values['DB_PASS']}@{values['DB_HOST']}:{values['DB_PORT']}/{values['DB_NAME']}"
         elif mode == "TEST":
             values[

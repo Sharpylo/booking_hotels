@@ -5,7 +5,7 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from app.config import settings
 
 if settings.MODE == "DEV":
-    DATABASE_URL = settings.DEV_DATABASE_URL
+    DATABASE_URL = settings.DATABASE_URL
     DATABASE_PARAMS = {}
 elif settings.MODE == "TEST":
     DATABASE_URL = settings.TEST_DATABASE_URL
